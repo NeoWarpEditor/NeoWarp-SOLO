@@ -10,7 +10,27 @@ permissions:
   contents: write
 
 jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create GitHub release
+      run: |
+        gh release create "${{ github.ref_name }}" \
+          --title "NeoWarp SOLO ${{ github.ref_name }}" \
+          --notes-file - <<'EOF'
+        NeoWarp SOLO 首个公开发布版本。
+
+        多平台安装包由 GitHub Actions 自动构建并上传：
+
+        - **Windows**：NSIS 安装包 + 便携版（x64）
+        - **macOS**：DMG（universal，App 未做签名，首次打开请右键 -> 打开 或允许 Gatekeeper）
+        - **Linux**：deb / tar.gz / AppImage（x64）
+        EOF
+      env:
+        GH_TOKEN: "${{ github.token }}"
+
   release-linux:
+    needs: create-release
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -51,6 +71,7 @@ jobs:
         GH_TOKEN: "${{ github.token }}"
 
   release-mac:
+    needs: create-release
     runs-on: macos-latest
     steps:
     - name: Checkout
@@ -91,6 +112,7 @@ jobs:
     # D: has much better faster write performance (>20x faster than C:)
     # We want to use the D: drive whenever we can. Trying to do "npm ci" on the C:
     # drive has been observed to take over an hour!
+    needs: create-release
     runs-on: windows-latest
     steps:
     # actions/checkout can only clone to paths in $GITHUB_WORKSPACE which is on the C: drive,
