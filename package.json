@@ -1,0 +1,216 @@
+{
+  "name": "neowarp-solo",
+  "description": "NeoWarp SOLO - a pure AI programming workspace for Scratch (.sb3) and JavaScript projects.",
+  "version": "1.0.0",
+  "license": "GPL-3.0",
+  "author": {
+    "email": "Shiyuan318@outlook.com",
+    "name": "Shiyuan"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "fetch": "node scripts/download-library-files.mjs && node scripts/download-packager.mjs && node scripts/prepare-extensions.mjs",
+    "postinstall": "patch-package",
+    "webpack:compile": "webpack",
+    "webpack:watch": "webpack --watch",
+    "webpack:prod": "cross-env NODE_ENV=production webpack",
+    "electron:start": "electron .",
+    "ai:schema": "node scripts/gen-opcode-schema.js",
+    "ai:prompt": "node scripts/build-system-prompt.js --write",
+    "ai:check": "node scripts/gen-opcode-schema.js --check && node scripts/build-system-prompt.js --check",
+    "ai:test": "node scripts/test-dsl-roundtrip.js && node scripts/test-data-tools.js && node scripts/test-stream-retry.js",
+    "electron:package:dir": "electron-builder --dir",
+    "electron:build": "electron-builder"
+  },
+  "dependencies": {
+    "@turbowarp/scaffolding": "^0.4.0",
+    "adm-zip": "^0.5.16",
+    "qrcode-generator": "^1.4.4",
+    "semver": "^7.7.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.12.16",
+    "@babel/preset-react": "^7.13.13",
+    "@electron/fuses": "^2.1.1",
+    "@turbowarp/extensions": "github:TurboWarp/extensions#master",
+    "adm-zip": "^0.5.16",
+    "autoprefixer": "^9.8.8",
+    "babel-loader": "^8.4.1",
+    "copy-webpack-plugin": "^6.4.1",
+    "cross-env": "^10.1.0",
+    "css-loader": "^1.0.1",
+    "electron": "^41.1.0",
+    "electron-builder": "^26.8.1",
+    "file-loader": "^6.2.0",
+    "html2canvas": "^1.4.1",
+    "monaco-editor": "^0.56.0",
+    "patch-package": "^8.0.1",
+    "postcss": "^8.4.13",
+    "postcss-import": "^14.0.0",
+    "postcss-loader": "^4.2.0",
+    "postcss-simple-vars": "^6.0.3",
+    "scratch-gui": "github:TurboWarp/scratch-gui#develop",
+    "sharp": "^0.35.1",
+    "style-loader": "^0.23.0",
+    "to-ico": "^1.1.5",
+    "url-loader": "^4.1.1",
+    "webpack": "4.47.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "overrides": {
+    "webpack@4.47.0": {
+      "terser-webpack-plugin": "^4.2.3"
+    }
+  },
+  "homepage": "https://github.com/Shiyuan-318/NeoWarp-SOLO",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shiyuan-318/NeoWarp-SOLO.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Shiyuan-318/NeoWarp-SOLO/issues",
+    "email": "Shiyuan318@outlook.com"
+  },
+  "main": "./src-main/entrypoint.js",
+  "build": {
+    "appId": "org.neowarp.solo",
+    "productName": "NeoWarp SOLO",
+    "electronLanguages": [
+      "en-US",
+      "zh-CN",
+      "zh-TW"
+    ],
+    "files": [
+      "node_modules/**/*",
+      "src-main/**/*",
+      "src-preload/**/*",
+      "src-renderer/**/*",
+      "dist-renderer-webpack/**/*",
+      "dist-library-files/**/*",
+      "dist-extensions/**/*",
+      "!**/*.map",
+      "!node_modules/monaco-editor",
+      "!node_modules/monaco-editor/**/*",
+      "!node_modules/scratch-gui",
+      "!node_modules/scratch-gui/**/*",
+      "!src-renderer/extension-editor",
+      "!src-renderer/extension-editor/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "art/icon.png",
+        "to": "icon.png"
+      },
+      {
+        "from": "art/icon.svg",
+        "to": "icon.svg"
+      }
+    ],
+    "win": {
+      "artifactName": "${productName} Portable ${version} ${arch}.${ext}",
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": true,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": "x64"
+        },
+        {
+          "target": "portable",
+          "arch": "x64"
+        }
+      ]
+    },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+      "oneClick": false,
+      "deleteAppDataOnUninstall": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "icon": "build/icon.icns",
+      "category": "public.app-category.education",
+      "darkModeSupport": true,
+      "gatekeeperAssess": false,
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "extendInfo": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "LSMultipleInstancesProhibited": true,
+        "NSCameraUsageDescription": "This app requires camera access when using the video sensing or face sensing blocks.",
+        "NSMicrophoneUsageDescription": "This app requires microphone access when recording sounds or detecting loudness."
+      },
+      "target": [
+        {
+          "arch": "universal",
+          "target": "dmg"
+        }
+      ]
+    },
+    "linux": {
+      "executableName": "neowarp-solo",
+      "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
+      "icon": "./build/",
+      "synopsis": "NeoWarp SOLO - a pure AI programming workspace.",
+      "description": "NeoWarp SOLO is a pure AI programming workspace: give AI instructions to build or modify Scratch (.sb3) and JavaScript projects, with a detached stage window for running the result.",
+      "category": "Development",
+      "desktop": {
+        "entry": {
+          "StartupWMClass": "neowarp-solo",
+          "Keywords": "scratch;neowarp;solo;ai;"
+        }
+      },
+      "extraFiles": [
+        "linux-files"
+      ],
+      "target": [
+        {
+          "target": "deb"
+        },
+        {
+          "target": "appimage"
+        },
+        {
+          "target": "tar.gz"
+        }
+      ]
+    },
+    "appImage": {
+      "license": null
+    },
+    "fileAssociations": [
+      {
+        "ext": "sb3",
+        "name": "Scratch 3 Project",
+        "description": "Scratch 3 Project",
+        "role": "Editor",
+        "mimeType": "application/x.scratch.sb3"
+      },
+      {
+        "ext": "sb2",
+        "name": "Scratch 2 Project",
+        "description": "Scratch 2 Project",
+        "role": "Editor",
+        "mimeType": "application/x.scratch.sb2"
+      },
+      {
+        "ext": "sb",
+        "name": "Scratch 1 Project",
+        "description": "Scratch 1 Project",
+        "role": "Editor",
+        "mimeType": "application/x.scratch.sb"
+      },
+      {
+        "ext": "js",
+        "name": "JavaScript File",
+        "description": "JavaScript File (NeoWarp SOLO Extension)",
+        "role": "Editor",
+        "mimeType": "text/javascript"
+      }
+    ]
+  },
+  "private": true
+}
