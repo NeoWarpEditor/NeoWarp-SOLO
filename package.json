@@ -1,7 +1,7 @@
 {
   "name": "neowarp-solo",
   "description": "NeoWarp SOLO - a pure AI programming workspace for Scratch (.sb3) and JavaScript projects.",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "license": "GPL-3.0",
   "author": {
     "email": "Shiyuan318@outlook.com",
