@@ -122,6 +122,7 @@ function runHarness(script) {
         'getTodoAppendTarget', 'executeToolCall', 'buildApiMessages', 'sendMessage',
         'PROVIDERS', 'currentConfig', 'doApiCall', 'isGeneratingConvVisible', 'setGeneratingConv',
         'getGeneratingConv', 'pushGeneratingMessage', 'trackSidebarTodoToolCalls', 'notifySidebarTodoTurnEnd',
+        'handleWorkflowTurnEnd',
         'generationAbortRequested',
         'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', '__export',
         itsf + retryBlock + exportShim
@@ -150,6 +151,7 @@ function runHarness(script) {
         function(m) { chatHistory.push(m); },
         rec('trackSidebarTodoToolCalls'),
         rec('notifySidebarTodoTurnEnd'),
+        rec('handleWorkflowTurnEnd'),
         false,
         clock.setTimeout, clock.setInterval, clock.clearTimeout, clock.clearInterval,
         function(e) { exported = e; }
